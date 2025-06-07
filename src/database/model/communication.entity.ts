@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'COMMUNICATION' })
 export class Communication {
@@ -14,6 +14,6 @@ export class Communication {
   @Column({ name: 'STATUS' })
   status: string;
 
-  @Column({ name: 'ID_APPOINTMENT' })
+  @ManyToOne(() => Communication, (communication) => communication.id)
   idAppointment: string;
 }

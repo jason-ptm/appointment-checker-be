@@ -1,13 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Speciality } from './speciality.entity';
 
-@Entity({ name: 'SpECIALITY_DOCTOR' })
+@Entity({ name: 'SPECIALITY_DOCTOR' })
 export class SpecialityDoctor {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @Column({ name: 'ID_SPECIALITY' })
+  @ManyToOne(() => Speciality, (speciality) => speciality.id)
   idSpeciality: string;
 
-  @Column({ name: 'ID_DOCTOR' })
+  @ManyToOne(
+    () => SpecialityDoctor,
+    (specialityDoctor) => specialityDoctor.idDoctor,
+  )
   idDoctor: string;
 }

@@ -1,5 +1,6 @@
 import { APPOINTMENT_STATUS } from 'src/utils/constants';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity({ name: 'APPOINTMENT' })
 export class Appointment {
@@ -12,6 +13,9 @@ export class Appointment {
   @Column({ name: 'STATUS', default: APPOINTMENT_STATUS.PENDING })
   status: string;
 
-  @Column({ name: 'ID_User' })
+  @OneToMany(() => User, (user) => user.id)
   idPatient: string;
+
+  @OneToMany(() => Appointment, (appointment) => appointment.id)
+  communications: Appointment[];
 }

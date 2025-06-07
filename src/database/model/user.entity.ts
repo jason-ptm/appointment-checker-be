@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Appointment } from './appointment.entity';
+import { UserRole } from './userRole.entity';
 
 @Entity({ name: 'User' })
 export class User {
@@ -16,4 +18,10 @@ export class User {
 
   @Column({ name: 'TYPE' })
   email: string;
+
+  @ManyToOne(() => UserRole, (userRole) => userRole.id)
+  roles: UserRole[];
+
+  @ManyToOne(() => Appointment, (appointment) => appointment.id)
+  appointments: Appointment[];
 }
