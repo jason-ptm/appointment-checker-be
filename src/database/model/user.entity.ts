@@ -1,27 +1,27 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Appointment } from './appointment.entity';
 import { UserRole } from './userRole.entity';
 
 @Entity({ name: 'User' })
 export class User {
-  @PrimaryColumn({ name: 'ID' })
+  @PrimaryColumn({ name: 'id' })
   id: string;
 
-  @Column({ name: 'NAME' })
+  @Column({ name: 'name' })
   name: string;
 
-  @Column({ name: 'PHONE_NUMBER' })
+  @Column({ name: 'phone_number' })
   phoneNumber: string;
 
-  @Column({ name: 'REGION' })
+  @Column({ name: 'region' })
   region: string;
 
-  @Column({ name: 'TYPE' })
-  email: string;
+  @Column({ name: 'type' })
+  type: string;
 
-  @ManyToOne(() => UserRole, (userRole) => userRole.id)
+  @OneToMany(() => UserRole, (userRole) => userRole.id)
   roles: UserRole[];
 
-  @ManyToOne(() => Appointment, (appointment) => appointment.id)
+  @OneToMany(() => Appointment, (appointment) => appointment.id)
   appointments: Appointment[];
 }

@@ -1,19 +1,19 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'COMMUNICATION' })
+@Entity({ name: 'Communication' })
 export class Communication {
-  @PrimaryGeneratedColumn('uuid', { name: 'ID' })
+  @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
-  @Column({ name: 'TYPE' })
+  @Column({ name: 'type' })
   type: string;
 
-  @Column({ name: 'START_DATE' })
+  @Column({ name: 'start_date' })
   startDate: Date;
 
-  @Column({ name: 'STATUS' })
+  @Column({ name: 'status_' })
   status: string;
 
-  @ManyToOne(() => Communication, (communication) => communication.id)
+  @OneToMany(() => Communication, (communication) => communication.id)
   idAppointment: string;
 }

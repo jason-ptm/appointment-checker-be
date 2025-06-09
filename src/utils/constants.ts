@@ -16,7 +16,11 @@ export const COMMUNICATION_STATUS_TYPE = {
 };
 
 export const USER_TYPE = {
-  PATIENT: 'PATIENT',
+  PATIENT: 'USER',
   DOCTOR: 'DOCTOR',
   ADMIN: 'ADMIN',
+};
+
+export const SHIFTS = {
+  REGULAR: 'REGULAR_SHIFT',
 };

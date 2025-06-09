@@ -1,21 +1,39 @@
 import { APPOINTMENT_STATUS } from 'src/utils/constants';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Doctor } from './doctor.entity';
+import { Speciality } from './speciality.entity';
 import { User } from './user.entity';
 
-@Entity({ name: 'APPOINTMENT' })
+@Entity({ name: 'Appointment' })
 export class Appointment {
-  @PrimaryGeneratedColumn('uuid', { name: 'ID' })
+  @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
-  @Column({ name: 'APPOINTMEN_DATE' })
-  appointmentDate: Date;
+  @Column({ name: 'appointment_date' })
+  appointmentDate: string;
 
-  @Column({ name: 'STATUS', default: APPOINTMENT_STATUS.PENDING })
+  @Column({ name: 'status', default: APPOINTMENT_STATUS.PENDING })
   status: string;
 
-  @OneToMany(() => User, (user) => user.id)
+  @OneToOne(() => Speciality, (speciality) => speciality.id)
+  @JoinColumn({ name: 'id_speciality' })
+  idSpeciality: string;
+
+  @OneToOne(() => Doctor, (doctor) => doctor.doctorId)
+  @JoinColumn({ name: 'id_doctor' })
+  idDoctor: string;
+
+  @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn({ name: 'id_patient' })
   idPatient: string;
 
-  @OneToMany(() => Appointment, (appointment) => appointment.id)
+  @ManyToOne(() => Appointment, (appointment) => appointment.id)
   communications: Appointment[];
 }

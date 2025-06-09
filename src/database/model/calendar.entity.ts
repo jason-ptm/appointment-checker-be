@@ -1,17 +1,20 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { DoctorCalendar } from './doctorCalendar.entity';
 
-@Entity({ name: 'CALENDAR' })
+@Entity({ name: 'Calendar' })
 export class Calendar {
-  @PrimaryGeneratedColumn('uuid', { name: 'ID' })
+  @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
-  @Column({ name: 'STARTDATE' })
-  startDate: Date;
+  @Column({ name: 'start_date' })
+  startDate: string;
 
-  @Column({ name: 'ENDDATE' })
-  endDate: Date;
+  @Column({ name: 'end_date' })
+  endDate: string;
 
-  @ManyToOne(() => DoctorCalendar, (calendar) => calendar.idCalendar)
+  @Column()
+  key: string;
+
+  @OneToMany(() => DoctorCalendar, (calendar) => calendar.idCalendar)
   idCalendarDoctor: string;
 }
