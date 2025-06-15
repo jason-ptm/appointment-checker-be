@@ -11,7 +11,7 @@ export class Communication {
   @Column({ name: 'start_date' })
   startDate: Date;
 
-  @Column({ name: 'status_' })
+  @Column({ name: 'status' })
   status: string;
 
   @OneToMany(() => Communication, (communication) => communication.id)
