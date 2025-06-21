@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { console } from 'inspector';
 import { Role } from 'src/database/model/role.entity';
 import { UserRole } from 'src/database/model/userRole.entity';
+import { User } from 'src/database/model/user.entity';
 import { USER_TYPE } from 'src/utils/constants';
 import { Repository } from 'typeorm';
 import { RoleService } from '../role/role.service';
@@ -12,17 +13,24 @@ export class UserRoleService {
   constructor(
     @InjectRepository(UserRole)
     private readonly userRoleRepository: Repository<UserRole>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly roleService: RoleService,
   ) {}
 
   async createUserRole(roles: Role[], idUser: string): Promise<UserRole[]> {
     try {
+      const user = await this.userRepository.findOne({ where: { id: idUser } });
+      if (!user) {
+        throw new Error(`User with id ${idUser} not found`);
+      }
+
       const finallRoles: UserRole[] = [];
 
       const userRoles = roles.map(async (role) => {
         const roleRep = this.userRoleRepository.create({
-          idUser,
-          idRole: role.id,
+          user: user,
+          role: role,
         });
         const finallRole = await this.userRoleRepository.save(roleRep);
         console.log(finallRole);

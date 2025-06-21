@@ -5,7 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from 'typeorm';
 import { Doctor } from './doctor.entity';
 import { Speciality } from './speciality.entity';
@@ -13,7 +13,7 @@ import { User } from './user.entity';
 
 @Entity({ name: 'Appointment' })
 export class Appointment {
-  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  @PrimaryColumn({ name: 'id' })
   id: string;
 
   @Column({ name: 'appointment_date' })
@@ -30,7 +30,7 @@ export class Appointment {
   @JoinColumn({ name: 'id_doctor' })
   idDoctor: string;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (patient) => patient.id)
   @JoinColumn({ name: 'id_patient' })
   idPatient: string;
 

@@ -12,13 +12,22 @@ import { UserRoleModule } from '../user-role/user-role.module';
 import { DoctorService } from './doctor.service';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { Appointment } from 'src/database/model/appointment.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Doctor, DoctorCalendar, SpecialityDoctor]),
+    TypeOrmModule.forFeature([
+      User,
+      Doctor,
+      DoctorCalendar,
+      SpecialityDoctor,
+      Appointment,
+    ]),
     UserRoleModule,
     CalendarModule,
     SpecialityModule,
+    AuthModule,
   ],
   providers: [UserService, DoctorService, CalendarService, SpecialityService],
   controllers: [UserController],

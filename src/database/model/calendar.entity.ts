@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { DoctorCalendar } from './doctorCalendar.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'Calendar' })
 export class Calendar {
@@ -14,7 +13,4 @@ export class Calendar {
 
   @Column()
   key: string;
-
-  @OneToMany(() => DoctorCalendar, (calendar) => calendar.idCalendar)
-  idCalendarDoctor: string;
 }
