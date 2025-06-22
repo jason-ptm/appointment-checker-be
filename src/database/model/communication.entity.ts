@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+} from 'typeorm';
+import { Appointment } from './appointment.entity';
 
 @Entity({ name: 'Communication' })
 export class Communication {
@@ -14,6 +21,7 @@ export class Communication {
   @Column({ name: 'status' })
   status: string;
 
-  @OneToMany(() => Communication, (communication) => communication.id)
+  @ManyToOne(() => Appointment, (appointment) => appointment.id)
+  @JoinColumn({ name: 'id_appointment' })
   idAppointment: string;
 }

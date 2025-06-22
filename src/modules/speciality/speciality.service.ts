@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Speciality } from 'src/database/model/speciality.entity';
 import { ErrorResponse } from 'src/utils/model/error';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateSpecialityDto } from './dto/create-speciality.dto';
 
 @Injectable()
@@ -41,7 +41,7 @@ export class SpecialityService {
   async findByKey(key: string): Promise<Speciality | null> {
     return this.specialityRepository.findOne({
       where: {
-        name: Like(`%${key}%`),
+        name: key,
       },
     });
   }

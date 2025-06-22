@@ -5,9 +5,9 @@ import {
   OneToOne,
   PrimaryColumn,
 } from 'typeorm';
-import { DoctorCalendar } from './doctorCalendar.entity';
 import { SpecialityDoctor } from './specialityDoctor.entity';
 import { User } from './user.entity';
+import { DoctorCalendar } from './doctorCalendar.entity';
 
 @Entity({ name: 'Doctor' })
 export class Doctor {
@@ -18,12 +18,12 @@ export class Doctor {
   @JoinColumn({ name: 'user_id' })
   userId: string;
 
-  @OneToMany(() => DoctorCalendar, (doctorCalendar) => doctorCalendar.idDoctor)
-  doctorCalendar: DoctorCalendar[];
-
   @OneToMany(
     () => SpecialityDoctor,
     (specialityDoctor) => specialityDoctor.idDoctor,
   )
   specialityDoctor: SpecialityDoctor[];
+
+  @OneToMany(() => DoctorCalendar, (doctorCalendar) => doctorCalendar.idDoctor)
+  doctorCalendar: DoctorCalendar[];
 }

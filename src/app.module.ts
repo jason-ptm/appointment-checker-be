@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { getDatabaseConfig } from './database/config';
 import { getEntities } from './database/model';
 import { AppointmentModule } from './modules/appointment/appointment.module';
@@ -13,6 +13,7 @@ import { SpecialityModule } from './modules/speciality/speciality.module';
 import { UserRoleModule } from './modules/user-role/user-role.module';
 import { UserRoleService } from './modules/user-role/user-role.service';
 import { UserModule } from './modules/user/user.module';
+import { CommunicationModule } from './modules/communication/communication.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UserModule } from './modules/user/user.module';
     AppointmentModule,
     CalendarModule,
     SpecialityModule,
+    CommunicationModule,
   ],
   controllers: [AppController],
   providers: [AppService, UserRoleService],

@@ -19,8 +19,8 @@ export class User {
   @Column({ name: 'type' })
   type: string;
 
-  @OneToMany(() => UserRole, (userRole) => userRole.id)
-  roles: UserRole[];
+  @OneToMany(() => UserRole, (userRole) => userRole.user)
+  userRoles: UserRole[];
 
   @OneToMany(() => Appointment, (appointment) => appointment.id)
   appointments: Appointment[];
