@@ -57,15 +57,27 @@ export class DoctorService {
           userId: id,
         }),
       );
+      const existingUser = await this.doctorRepository.save(
+        this.doctorRepository.create({
+          doctorId: id,
+          userId: id,
+        }),
+      );
 
+      const defaultCalendars = await this.calendarService.findByKey(
+        SHIFTS.REGULAR,
+      );
       const defaultCalendars = await this.calendarService.findByKey(
         SHIFTS.REGULAR,
       );
       const doctorCalendars: DoctorCalendar[] = [];
 
+
       await Promise.all(
         defaultCalendars.map(async (calendar) => {
+        defaultCalendars.map(async (calendar) => {
           const doctorCalendar = this.doctorCalendarRepository.create({
+            idDoctor: existingUser.doctorId,
             idDoctor: existingUser.doctorId,
             idCalendar: calendar.id,
           });
@@ -77,14 +89,18 @@ export class DoctorService {
       const specialityDoctor = this.specialityDoctorRepository.create({
         idDoctor: existingUser.doctorId,
         idSpeciality: speciality,
+        idDoctor: existingUser.doctorId,
+        idSpeciality: speciality,
       });
 
       await this.specialityDoctorRepository.save(specialityDoctor);
 
       return await this.doctorRepository.save({
+      return await this.doctorRepository.save({
         ...existingUser,
         doctorCalendar: doctorCalendars,
         specialityDoctor: [specialityDoctor],
+      });
       });
     } catch (error) {
       console.log(`Error creating user ${id}:`, error);

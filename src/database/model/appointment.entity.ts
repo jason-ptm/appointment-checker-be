@@ -1,5 +1,12 @@
 import { APPOINTMENT_STATUS } from 'src/utils/constants';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { Doctor } from './doctor.entity';
 import { Speciality } from './speciality.entity';
 import { User } from './user.entity';

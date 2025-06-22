@@ -2,22 +2,22 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   UseGuards,
-  Param,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { USER_TYPE } from 'src/utils/constants';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DoctorService } from './doctor.service';
 import { CreateDoctorDto } from './dto/create.dto';
 import { UserService } from './user.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import {
-  ApiBearerAuth,
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-} from '@nestjs/swagger';
 
 @ApiTags('users')
 @ApiBearerAuth()
