@@ -21,7 +21,10 @@ export class Communication {
   @Column({ name: 'status' })
   status: string;
 
-  @ManyToOne(() => Appointment, (appointment) => appointment.id)
+  @ManyToOne(() => Appointment, (appointment) => appointment.communications)
   @JoinColumn({ name: 'id_appointment' })
+  appointment: Appointment;
+
+  @Column({ name: 'id_appointment' })
   idAppointment: string;
 }

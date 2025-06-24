@@ -109,7 +109,6 @@ export class AppointmentService {
           continue;
         }
 
-        console.log('🚀 ~ AppointmentService ~ newId:', newId);
         const appointment = this.appointmentRepository.create({
           id: newId,
           appointmentDate: appointmentStart.toISOString(),

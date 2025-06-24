@@ -41,7 +41,7 @@ export class DoctorService {
     name,
     phoneNumber,
     region,
-    speciality,
+    specialities,
   }: CreateDoctorDto) {
     try {
       await this.userService.createUser({
@@ -57,27 +57,15 @@ export class DoctorService {
           userId: id,
         }),
       );
-      const existingUser = await this.doctorRepository.save(
-        this.doctorRepository.create({
-          doctorId: id,
-          userId: id,
-        }),
-      );
 
-      const defaultCalendars = await this.calendarService.findByKey(
-        SHIFTS.REGULAR,
-      );
       const defaultCalendars = await this.calendarService.findByKey(
         SHIFTS.REGULAR,
       );
       const doctorCalendars: DoctorCalendar[] = [];
 
-
       await Promise.all(
         defaultCalendars.map(async (calendar) => {
-        defaultCalendars.map(async (calendar) => {
           const doctorCalendar = this.doctorCalendarRepository.create({
-            idDoctor: existingUser.doctorId,
             idDoctor: existingUser.doctorId,
             idCalendar: calendar.id,
           });
@@ -86,21 +74,21 @@ export class DoctorService {
         }),
       );
 
-      const specialityDoctor = this.specialityDoctorRepository.create({
-        idDoctor: existingUser.doctorId,
-        idSpeciality: speciality,
-        idDoctor: existingUser.doctorId,
-        idSpeciality: speciality,
-      });
+      // Crear múltiples especialidades para el doctor
+      const specialityDoctors = await Promise.all(
+        specialities.map(async (specialityId) => {
+          const specialityDoctor = this.specialityDoctorRepository.create({
+            idDoctor: existingUser.doctorId,
+            idSpeciality: specialityId,
+          });
+          return await this.specialityDoctorRepository.save(specialityDoctor);
+        }),
+      );
 
-      await this.specialityDoctorRepository.save(specialityDoctor);
-
-      return await this.doctorRepository.save({
       return await this.doctorRepository.save({
         ...existingUser,
         doctorCalendar: doctorCalendars,
-        specialityDoctor: [specialityDoctor],
-      });
+        specialityDoctor: specialityDoctors,
       });
     } catch (error) {
       console.log(`Error creating user ${id}:`, error);
@@ -277,16 +265,30 @@ export class DoctorService {
         .orderBy('appointment.appointmentDate', 'ASC')
         .getMany();
 
+      // Obtener todos los IDs únicos de especialidades y pacientes
+      const specialityIds = [
+        ...new Set(appointments.map((a) => a.idSpeciality)),
+      ];
+      const patientIds = [...new Set(appointments.map((a) => a.idPatient))];
+
+      // Obtener todas las especialidades y pacientes en una sola consulta
+      const specialities = await this.specialityRepository
+        .createQueryBuilder('speciality')
+        .where('speciality.id IN (:...ids)', { ids: specialityIds })
+        .getMany();
+
+      const patients = await this.userRepository
+        .createQueryBuilder('patient')
+        .where('patient.id IN (:...ids)', { ids: patientIds })
+        .getMany();
+
+      // Crear mapas para acceso rápido
+      const specialityMap = new Map(specialities.map((s) => [s.id, s]));
+      const patientMap = new Map(patients.map((p) => [p.id, p]));
+
       // Obtener información detallada de pacientes y especialidades
       const formattedAppointments = await Promise.all(
         appointments.map(async (appointment) => {
-          const speciality = await this.specialityRepository.findOne({
-            where: { id: appointment.idSpeciality },
-          });
-          const patient = await this.userRepository.findOne({
-            where: { id: appointment.idPatient },
-          });
-
           // Contar las comunicaciones asociadas a esta cita
           const communicationCount = await this.communicationRepository
             .createQueryBuilder('communication')
@@ -294,6 +296,9 @@ export class DoctorService {
               appointmentId: appointment.id,
             })
             .getCount();
+
+          const speciality = specialityMap.get(appointment.idSpeciality);
+          const patient = patientMap.get(appointment.idPatient);
 
           return {
             id: appointment.id,
@@ -314,25 +319,17 @@ export class DoctorService {
         }),
       );
 
-      // Ordenar las citas por estado y luego por fecha
+      // Ordenar las citas por fecha, con las canceladas al final
       const sortedAppointments = formattedAppointments.sort((a, b) => {
-        // Definir el orden de prioridad de los estados
-        const statusOrder: Record<string, number> = {
-          CONFIRMED: 1,
-          PENDING: 2,
-          COMPLETED: 3,
-          CANCELLED: 4,
-        };
-
-        const statusA = statusOrder[a.status] || 999;
-        const statusB = statusOrder[b.status] || 999;
-
-        // Si los estados son diferentes, ordenar por estado
-        if (statusA !== statusB) {
-          return statusA - statusB;
+        // Si una está cancelada y la otra no, la cancelada va al final
+        if (a.status === 'CANCELLED' && b.status !== 'CANCELLED') {
+          return 1;
+        }
+        if (a.status !== 'CANCELLED' && b.status === 'CANCELLED') {
+          return -1;
         }
 
-        // Si los estados son iguales, ordenar por fecha de cita
+        // Si ambas tienen el mismo estado (canceladas o no canceladas), ordenar por fecha
         const dateA = new Date(a.appointmentDate);
         const dateB = new Date(b.appointmentDate);
         return dateA.getTime() - dateB.getTime();

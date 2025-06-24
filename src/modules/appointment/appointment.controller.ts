@@ -25,13 +25,13 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentStatusDto } from './dto/update-appointment-status.dto';
 
 @ApiTags('appointments')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('appointment')
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new appointment' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -49,6 +49,8 @@ export class AppointmentController {
   }
 
   @Get('/user/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async findByUser(
     @Param('userId') userId: string,
   ): Promise<AppointmentWithDetails[]> {
@@ -70,6 +72,7 @@ export class AppointmentController {
     @Param('appointmentId') appointmentId: string,
     @Body() updateAppointmentStatusDto: UpdateAppointmentStatusDto,
   ): Promise<Appointment> {
+    console.log('🚀 ~ AppointmentController ~ appointmentId:', appointmentId);
     const result = await this.appointmentService.updateAppointmentStatus(
       appointmentId,
       updateAppointmentStatusDto.status,
@@ -78,12 +81,16 @@ export class AppointmentController {
   }
 
   @Get('/debug/health')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Check database health for debugging' })
   async checkDatabaseHealth() {
     return this.appointmentService.checkDatabaseHealth();
   }
 
   @Delete('/debug/:appointmentId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete appointment by ID for debugging' })
   async deleteAppointment(@Param('appointmentId') appointmentId: string) {
     await this.appointmentService.deleteById(appointmentId);
@@ -91,12 +98,16 @@ export class AppointmentController {
   }
 
   @Delete('/debug/clean')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Clean all appointments from database' })
   async cleanDatabase() {
     return this.appointmentService.cleanDatabase();
   }
 
   @Post('/debug/reset')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Reset appointment table (DANGEROUS - drops table)',
   })
@@ -105,6 +116,8 @@ export class AppointmentController {
   }
 
   @Get('/debug/test-uuid')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Test UUID generation' })
   async testUuidGeneration() {
     return this.appointmentService.testUuidGeneration();

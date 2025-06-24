@@ -32,7 +32,6 @@ import { AuthModule } from '../auth/auth.module';
     CalendarModule,
     SpecialityModule,
     AuthModule,
-    AuthModule,
   ],
   providers: [UserService, DoctorService, CalendarService, SpecialityService],
   controllers: [UserController],

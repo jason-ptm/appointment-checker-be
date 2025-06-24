@@ -7,5 +7,5 @@ export interface CreateUserDto {
 }
 
 export type CreateDoctorDto = CreateUserDto & {
-  speciality: string;
+  specialities: string[];
 };
